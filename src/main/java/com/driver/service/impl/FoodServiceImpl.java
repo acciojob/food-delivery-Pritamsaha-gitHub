@@ -1,5 +1,7 @@
 package com.driver.service.impl;
 
+import com.driver.io.DTOs.F_DtoToEntity;
+import com.driver.io.DTOs.F_EntityToDto;
 import com.driver.io.entity.FoodEntity;
 import com.driver.io.repository.FoodRepository;
 import com.driver.service.FoodService;
@@ -13,15 +15,14 @@ import java.util.List;
 public class FoodServiceImpl implements FoodService {
     @Autowired
     FoodRepository foodRepository;
+    F_DtoToEntity change=new F_DtoToEntity();
+    F_EntityToDto change1=new F_EntityToDto();
 
     @Override
     public FoodDto createFood(FoodDto food) {
-        FoodEntity foodEntity=new FoodEntity();
-        foodEntity.setFoodId(food.getFoodId());
-        foodEntity.setFoodName(food.getFoodName());
-        foodEntity.setFoodCategory(food.getFoodCategory());
-        foodEntity.setFoodPrice(food.getFoodPrice());
+        FoodEntity foodEntity=change.converter(food);
         foodRepository.save(foodEntity);
+        food.setId(foodEntity.getId());
         return food;
     }
 
@@ -29,12 +30,7 @@ public class FoodServiceImpl implements FoodService {
     public FoodDto getFoodById(String foodId) throws Exception {
        FoodEntity foodEntity=foodRepository.findByFoodId(foodId);
        //entity to dto
-        FoodDto foodDto=new FoodDto();
-        foodDto.setId(foodEntity.getId());
-        foodDto.setFoodName(foodEntity.getFoodName());
-        foodDto.setFoodCategory(foodEntity.getFoodCategory());
-        foodDto.setFoodId(foodEntity.getFoodId());
-        foodDto.setFoodPrice(foodEntity.getFoodPrice());
+        FoodDto foodDto=change1.converter(foodEntity);
         return foodDto;
     }
 
@@ -46,6 +42,7 @@ public class FoodServiceImpl implements FoodService {
         foodEntity.setFoodCategory(foodDetails.getFoodCategory());
         foodEntity.setFoodPrice(foodDetails.getFoodPrice());
         foodRepository.save(foodEntity);
+        foodDetails.setId(foodEntity.getId());
         return  foodDetails;
     }
 
@@ -65,12 +62,7 @@ public class FoodServiceImpl implements FoodService {
         List<FoodDto>ansList=new ArrayList<>();
 
         for (FoodEntity f:foodlist){
-            FoodDto foodDto=new FoodDto();
-            foodDto.setId(foodDto.getId());
-            foodDto.setFoodName(f.getFoodName());
-            foodDto.setFoodId(f.getFoodId());
-            foodDto.setFoodPrice(f.getFoodPrice());
-            foodDto.setFoodCategory(f.getFoodCategory());
+            FoodDto foodDto=change1.converter(f);
             ansList.add(foodDto);
         }
         return ansList;

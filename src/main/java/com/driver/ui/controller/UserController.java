@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.driver.io.DTOs.F_DtoToResponse;
+import com.driver.io.DTOs.F_RequestToDto;
 import com.driver.model.request.UserDetailsRequestModel;
 import com.driver.model.response.OperationStatusModel;
 import com.driver.model.response.RequestOperationName;
@@ -27,55 +29,36 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 	@Autowired
 	UserServiceImpl userService;
-
+	F_DtoToResponse change=new F_DtoToResponse();
+	F_RequestToDto change1=new F_RequestToDto();
 	@GetMapping(path = "/{id}")
 	public UserResponse getUser(@PathVariable String id) throws Exception{
 
 		UserDto userDto= userService.getUserByUserId(id);
 		//userDto To UserResponse
-		UserResponse userResponse=new UserResponse();
-		userResponse.setUserId(userDto.getUserId());
-		userResponse.setEmail(userDto.getEmail());
-		userResponse.setFirstName(userDto.getFirstName());
-		userResponse.setLastName(userDto.getLastName());
+		UserResponse userResponse=change.userConverter(userDto);
 		return userResponse;
 	}
 
 	@PostMapping()
 	public UserResponse createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception{
 		//userDetailsRequestModel To userDto
-		UserDto userDto=new UserDto();
-		userDto.setUserId(UUID.randomUUID().toString());
-		userDto.setFirstName(userDetails.getFirstName());
-		userDto.setLastName(userDetails.getLastName());
-		userDto.setEmail(userDetails.getEmail());
+		UserDto userDto=change1.userConverter(userDetails);
 
 		UserDto userReturn=userService.createUser(userDto);
 
 		//userDto to UserResponse
-		UserResponse userResponse=new UserResponse();
-		userResponse.setUserId(userReturn.getUserId());
-		userResponse.setEmail(userReturn.getEmail());
-		userResponse.setFirstName(userReturn.getFirstName());
-		userResponse.setLastName(userReturn.getLastName());
+		UserResponse userResponse=change.userConverter(userReturn);
 		return userResponse;
 	}
 
 	@PutMapping(path = "/{id}")
 	public UserResponse updateUser(@PathVariable String id, @RequestBody UserDetailsRequestModel userDetails) throws Exception{
 		//userDetailsRequestModel to userDto
-		UserDto userDto=new UserDto();
-		userDto.setUserId(UUID.randomUUID().toString());
-		userDto.setFirstName(userDetails.getFirstName());
-		userDto.setLastName(userDetails.getLastName());
-		userDto.setEmail(userDetails.getEmail());
+		UserDto userDto=change1.userConverter(userDetails);
 		UserDto userReturn=userService.updateUser(id,userDto);
 		//userDto to UserResponse
-		UserResponse userResponse=new UserResponse();
-		userResponse.setUserId(userReturn.getUserId());
-		userResponse.setEmail(userReturn.getEmail());
-		userResponse.setFirstName(userReturn.getFirstName());
-		userResponse.setLastName(userReturn.getLastName());
+		UserResponse userResponse=change.userConverter(userReturn);
 		return userResponse;
 	}
 
@@ -102,11 +85,7 @@ public class UserController {
 		List<UserResponse>anslist=new ArrayList<>();
 
 		for(UserDto u : List){
-			UserResponse userResponse=new UserResponse();
-			userResponse.setUserId(u.getUserId());
-			userResponse.setFirstName(u.getFirstName());
-			userResponse.setLastName(u.getLastName());
-			userResponse.setEmail(u.getEmail());
+			UserResponse userResponse=change.userConverter(u);
 			anslist.add(userResponse);
 		}
 		return anslist;

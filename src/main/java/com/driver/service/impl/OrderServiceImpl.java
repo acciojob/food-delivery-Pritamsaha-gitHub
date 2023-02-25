@@ -1,5 +1,6 @@
 package com.driver.service.impl;
 
+import com.driver.io.DTOs.F_EntityToDto;
 import com.driver.io.entity.FoodEntity;
 import com.driver.io.entity.OrderEntity;
 import com.driver.io.repository.FoodRepository;
@@ -25,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
     UserRepository userRepository;
     @Autowired
     FoodRepository foodRepository;
+    F_EntityToDto change=new F_EntityToDto();
 
     @Override
     public OrderDto createOrder(OrderDto order) {
@@ -51,13 +53,7 @@ public class OrderServiceImpl implements OrderService {
         if(orderEntity.equals(null)){
             throw new Exception("ERROR");
         }
-        OrderDto orderDto=new OrderDto();
-        orderDto.setId(orderEntity.getId());
-        orderDto.setOrderId(orderEntity.getOrderId());
-        orderDto.setCost(orderEntity.getCost());
-        orderDto.setItems(orderEntity.getItems());
-        orderDto.setUserId(orderEntity.getUserId());
-        orderDto.setStatus(orderEntity.isStatus());
+        OrderDto orderDto=change.orderConverter(orderEntity);
         return orderDto;
     }
 
@@ -92,13 +88,8 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDto>ansList=new ArrayList<>();
 
         for(OrderEntity o : foodlist){
-            OrderDto orderDto=new OrderDto();
-            orderDto.setId(o.getId());
-            orderDto.setOrderId(o.getOrderId());
-            orderDto.setCost(o.getCost());
-            orderDto.setItems(o.getItems());
-            orderDto.setUserId(o.getUserId());
-            orderDto.setStatus(o.isStatus());
+            OrderDto orderDto=change.orderConverter(o);
+            ansList.add(orderDto);
         }
         return ansList;
     }

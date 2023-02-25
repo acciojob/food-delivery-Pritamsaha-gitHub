@@ -1,5 +1,7 @@
 package com.driver.service.impl;
 
+import com.driver.io.DTOs.F_DtoToEntity;
+import com.driver.io.DTOs.F_EntityToDto;
 import com.driver.io.entity.FoodEntity;
 import com.driver.io.entity.UserEntity;
 import com.driver.io.repository.UserRepository;
@@ -15,14 +17,12 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
+    F_DtoToEntity change=new F_DtoToEntity();
+    F_EntityToDto change1=new F_EntityToDto();
     @Override
     public UserDto createUser(UserDto user) throws Exception {
         //userDto to UserEntity
-        UserEntity userEntity=new UserEntity();
-        userEntity.setUserId(user.getUserId());
-        userEntity.setFirstName(user.getFirstName());
-        userEntity.setLastName(user.getLastName());
-        userEntity.setEmail(user.getEmail());
+        UserEntity userEntity=change.userConverter(user);
         userRepository.save(userEntity);
         user.setId(userEntity.getId());
         return  user;
@@ -32,12 +32,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUser(String email) throws Exception {
         UserEntity userEntity=userRepository.findByEmail(email);
         //userEntity to userDto
-        UserDto userDto=new UserDto();
-        userDto.setId(userEntity.getId());
-        userDto.setUserId(userEntity.getUserId());
-        userDto.setFirstName(userEntity.getFirstName());
-        userDto.setLastName(userEntity.getLastName());
-        userDto.setEmail(userEntity.getEmail());
+        UserDto userDto=change1.userConverter(userEntity);
         return userDto;
     }
 
@@ -46,12 +41,7 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity=userRepository.findByUserId(userId);
 
         //userEntity to userDto
-        UserDto userDto=new UserDto();
-        userDto.setId(userEntity.getId());
-        userDto.setUserId(userEntity.getUserId());
-        userDto.setFirstName(userEntity.getFirstName());
-        userDto.setLastName(userEntity.getLastName());
-        userDto.setEmail(userEntity.getEmail());
+        UserDto userDto=change1.userConverter(userEntity);
         return userDto;
     }
 
@@ -83,12 +73,7 @@ public class UserServiceImpl implements UserService {
         List<UserDto>ansList=new ArrayList<>();
 
         for(UserEntity u:userlist){
-            UserDto userDto=new UserDto();
-            userDto.setId(u.getId());
-            userDto.setUserId(u.getUserId());
-            userDto.setFirstName(u.getFirstName());
-            userDto.setLastName(u.getLastName());
-            userDto.setEmail(u.getEmail());
+            UserDto userDto=change1.userConverter(u);
             ansList.add(userDto);
         }
         return ansList;

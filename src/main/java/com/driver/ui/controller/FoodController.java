@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.driver.io.DTOs.F_DtoToResponse;
+import com.driver.io.DTOs.F_RequestToDto;
 import com.driver.io.entity.FoodEntity;
 import com.driver.model.request.FoodDetailsRequestModel;
 import com.driver.model.response.FoodDetailsResponse;
@@ -27,63 +29,41 @@ import org.springframework.web.bind.annotation.RestController;
 public class FoodController {
 	@Autowired
 	FoodServiceImpl foodService;
+	F_DtoToResponse change=new F_DtoToResponse();
+	F_RequestToDto change1=new F_RequestToDto();
+
 
 	@GetMapping(path="/{id}")
 	public FoodDetailsResponse getFood(@PathVariable String id) throws Exception{
 
 		FoodDto returnDto=foodService.getFoodById(id);
 		//dto to foodDetailsresponse
-		FoodDetailsResponse foodDetailsResponse=new FoodDetailsResponse();
-		foodDetailsResponse.setFoodId(returnDto.getFoodId());
-		foodDetailsResponse.setFoodName(returnDto.getFoodName());
-		foodDetailsResponse.setFoodCategory(returnDto.getFoodCategory());
-		foodDetailsResponse.setFoodPrice(returnDto.getFoodPrice());
+
+		FoodDetailsResponse foodDetailsResponse= change.converter(returnDto);
 		return foodDetailsResponse;
 	}
 
 	@PostMapping("/create")
 	public FoodDetailsResponse createFood(@RequestBody FoodDetailsRequestModel foodDetails) {
-		//converting foodDetails to foodentity
-		FoodEntity food=new FoodEntity();
-		food.setFoodName(foodDetails.getFoodName());
-		food.setFoodCategory(foodDetails.getFoodCategory());
-		food.setFoodPrice(foodDetails.getFoodPrice());
-		food.setFoodId(UUID.randomUUID().toString());
-		//converting foodEntity to foodDto
-		FoodDto foodDto=new FoodDto();
-		foodDto.setFoodName(food.getFoodName());
-		foodDto.setFoodCategory(food.getFoodCategory());
-		foodDto.setFoodPrice(food.getFoodPrice());
-		foodDto.setFoodId(food.getFoodId());
-		foodDto.setId(food.getId());
+
+		//converting foodDetails to foodDto
+		FoodDto foodDto=change1.converter(foodDetails);
 
 		FoodDto returnValue=foodService.createFood(foodDto);
 		//returnvalue to foodDetailsResponse
-		FoodDetailsResponse foodDetailsResponse=new FoodDetailsResponse();
-		foodDetailsResponse.setFoodId(returnValue.getFoodId());
-		foodDetailsResponse.setFoodName(returnValue.getFoodName());
-		foodDetailsResponse.setFoodCategory(returnValue.getFoodCategory());
-		foodDetailsResponse.setFoodPrice(returnValue.getFoodPrice());
+		FoodDetailsResponse foodDetailsResponse=change.converter(returnValue);
 		return foodDetailsResponse;
 	}
 
 	@PutMapping(path="/{id}")
 	public FoodDetailsResponse updateFood(@PathVariable String id, @RequestBody FoodDetailsRequestModel foodDetails) throws Exception{
-
-		FoodDto foodDto=new FoodDto();
 		//foodDetails to foodDto
-		foodDto.setFoodName(foodDetails.getFoodName());
-		foodDto.setFoodCategory(foodDetails.getFoodCategory());
-		foodDto.setFoodPrice(foodDetails.getFoodPrice());
+		FoodDto foodDto=change1.converter(foodDetails);
 
 		FoodDto returnDto=foodService.updateFoodDetails(id,foodDto);
 
 		//dto to foodResponse
-		FoodDetailsResponse foodDetailsResponse=new FoodDetailsResponse();
-		foodDetailsResponse.setFoodId(returnDto.getFoodId());
-		foodDetailsResponse.setFoodName(returnDto.getFoodName());
-		foodDetailsResponse.setFoodCategory(returnDto.getFoodCategory());
-		foodDetailsResponse.setFoodPrice(returnDto.getFoodPrice());
+		FoodDetailsResponse foodDetailsResponse=change.converter(foodDto);
 		return foodDetailsResponse;
 	}
 
@@ -109,11 +89,7 @@ public class FoodController {
 		List<FoodDto>returnList=foodService.getFoods();
 
 		for(FoodDto f : returnList){
-			FoodDetailsResponse food=new FoodDetailsResponse();
-			food.setFoodId(f.getFoodId());
-			food.setFoodName(f.getFoodName());
-			food.setFoodCategory(f.getFoodCategory());
-			food.setFoodPrice(f.getFoodPrice());
+			FoodDetailsResponse food=change.converter(f);
 			foodlist.add(food);
 		}
 		return foodlist;
