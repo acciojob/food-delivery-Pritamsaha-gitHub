@@ -4,6 +4,7 @@ import com.driver.io.DTOs.F_DtoToEntity;
 import com.driver.io.DTOs.F_EntityToDto;
 import com.driver.io.entity.FoodEntity;
 import com.driver.io.repository.FoodRepository;
+import com.driver.model.response.RequestOperationStatus;
 import com.driver.service.FoodService;
 import com.driver.shared.dto.FoodDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class FoodServiceImpl implements FoodService {
     @Override
     public FoodDto getFoodById(String foodId) throws Exception {
        FoodEntity foodEntity=foodRepository.findByFoodId(foodId);
+       if(foodEntity.equals(null)){
+           throw new Exception(RequestOperationStatus.ERROR.toString());
+       }
        //entity to dto
         FoodDto foodDto=change1.converter(foodEntity);
         return foodDto;
@@ -38,6 +42,9 @@ public class FoodServiceImpl implements FoodService {
     public FoodDto updateFoodDetails(String foodId, FoodDto foodDetails) throws Exception {
         //foodDetails to foodEntity
         FoodEntity foodEntity=foodRepository.findByFoodId(foodId);
+        if(foodEntity.equals(null)){
+            throw new Exception(RequestOperationStatus.ERROR.toString());
+        }
         foodEntity.setFoodName(foodDetails.getFoodName());
         foodEntity.setFoodCategory(foodDetails.getFoodCategory());
         foodEntity.setFoodPrice(foodDetails.getFoodPrice());
@@ -49,6 +56,9 @@ public class FoodServiceImpl implements FoodService {
     @Override
     public void deleteFoodItem(String id) throws Exception {
         FoodEntity food=foodRepository.findByFoodId(id);
+        if(food.equals(null)){
+            throw new Exception(RequestOperationStatus.ERROR.toString());
+        }
         if (!food.equals(null)){
             foodRepository.deleteById(food.getId());
         }

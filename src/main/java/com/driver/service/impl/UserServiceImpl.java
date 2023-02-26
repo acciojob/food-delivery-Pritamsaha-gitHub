@@ -5,6 +5,7 @@ import com.driver.io.DTOs.F_EntityToDto;
 import com.driver.io.entity.FoodEntity;
 import com.driver.io.entity.UserEntity;
 import com.driver.io.repository.UserRepository;
+import com.driver.model.response.RequestOperationStatus;
 import com.driver.service.UserService;
 import com.driver.shared.dto.FoodDto;
 import com.driver.shared.dto.UserDto;
@@ -31,6 +32,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUser(String email) throws Exception {
         UserEntity userEntity=userRepository.findByEmail(email);
+        if(userEntity.equals(null)){
+            throw new Exception(RequestOperationStatus.ERROR.toString());
+        }
         //userEntity to userDto
         UserDto userDto=change1.userConverter(userEntity);
         return userDto;
@@ -40,6 +44,9 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserByUserId(String userId) throws Exception {
         UserEntity userEntity=userRepository.findByUserId(userId);
 
+        if(userEntity.equals(null)){
+            throw new Exception(RequestOperationStatus.ERROR.toString());
+        }
         //userEntity to userDto
         UserDto userDto=change1.userConverter(userEntity);
         return userDto;
@@ -48,6 +55,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(String userId, UserDto user) throws Exception {
         UserEntity userEntity=userRepository.findByUserId(userId);
+        if(userEntity.equals(null)){
+            throw new Exception(RequestOperationStatus.ERROR.toString());
+        }
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
         userEntity.setEmail(user.getEmail());
@@ -59,6 +69,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String userId) throws Exception {
         UserEntity userEntity=userRepository.findByUserId(userId);
+        if(userEntity.equals(null)){
+            throw new Exception(RequestOperationStatus.ERROR.toString());
+        }
         if(!userEntity.equals(null)){
             userRepository.deleteById(userEntity.getId());
         }

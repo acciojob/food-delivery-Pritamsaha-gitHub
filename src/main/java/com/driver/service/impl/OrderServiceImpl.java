@@ -6,6 +6,7 @@ import com.driver.io.entity.OrderEntity;
 import com.driver.io.repository.FoodRepository;
 import com.driver.io.repository.OrderRepository;
 import com.driver.io.repository.UserRepository;
+import com.driver.model.response.RequestOperationStatus;
 import com.driver.service.OrderService;
 import com.driver.shared.dto.FoodDto;
 import com.driver.shared.dto.OrderDto;
@@ -51,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto getOrderById(String orderId) throws Exception {
         OrderEntity orderEntity=orderRepository.findByOrderId(orderId);
         if(orderEntity.equals(null)){
-            throw new Exception("ERROR");
+            throw new Exception(RequestOperationStatus.ERROR.toString());
         }
         OrderDto orderDto=change.orderConverter(orderEntity);
         return orderDto;
@@ -61,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto updateOrderDetails(String orderId, OrderDto order) throws Exception {
         OrderEntity orderEntity=orderRepository.findByOrderId(orderId);
         if(orderEntity.equals(null)){
-            throw new Exception("ERROR");
+            throw new Exception(RequestOperationStatus.ERROR.toString());
         }
         orderEntity.setItems(order.getItems());
         orderEntity.setCost(order.getCost());
@@ -75,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
     public void deleteOrder(String orderId) throws Exception {
         OrderEntity orderEntity=orderRepository.findByOrderId(orderId);
         if (orderEntity.equals(null)){
-            throw new Exception("ERROR");
+            throw new Exception(RequestOperationStatus.ERROR.toString());
         }
         orderRepository.deleteById(orderEntity.getId());
     }
